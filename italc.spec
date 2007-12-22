@@ -16,6 +16,7 @@ BuildRequires:  zlib-devel
 BuildRequires:  jpeg-devel
 BuildRequires:  qt4-linguist
 BuildRequires:  libxtst-devel
+BuildRequires:  openssl-devel
 
 %description
 iTALC is a use- and powerful didactical tool for teachers. It lets you
