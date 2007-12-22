@@ -1,6 +1,6 @@
 %define name italc
 %define libname %mklibname italc
-%define version 1.0.3
+%define version 1.0.4
 %define release %mkrel 1
 
 Name:		%name
@@ -11,8 +11,12 @@ License:	GPL
 Group:		Networking/Remote access
 URL:		http://italc.sourceforge.net/
 Source:		%{name}-%{version}.tar.bz2
-Patch0:		%{name}_fix-compile.patch
-BuildRequires:	qt4-devel, zlib-devel, jpeg-devel
+BuildRequires:	qt4-devel
+BuildRequires:  zlib-devel
+BuildRequires:  jpeg-devel
+BuildRequires:  qt4-linguist
+BuildRequires:  libxtst-devel
+
 %description
 iTALC is a use- and powerful didactical tool for teachers. It lets you
 view and control other computers in your network in several ways. It
@@ -103,7 +107,7 @@ can make use of all of them.
 %package -n %libname
 Summary:	iTALC - Intelligent Teaching And Learning with Computers
 Group:		Networking/Remote access
-Requires:	%{libname} = %{version}-%{release}
+
 %description -n %libname
 iTALC is a use- and powerful didactical tool for teachers. It lets you
 view and control other computers in your network in several ways. It
@@ -114,10 +118,10 @@ This is a library used by %{name}-master and %{name}-client.
 
 %prep
 %setup -q
-%patch0 -p1
+
 
 %build
-export PATH=/usr/lib/qt4/bin:$PATH
+
 %configure --with-qtdir=/usr/lib/qt4
 %make
 %{__chmod} -x AUTHORS COPYING ChangeLog INSTALL README TODO
