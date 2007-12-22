@@ -122,6 +122,8 @@ This is a library used by %{name}-master and %{name}-client.
 
 
 %build
+export CFLAGS="$CFLAGS -fPIC"
+export CXXFLAGS="$CXXFLAGS -fPIC"
 
 %configure --with-qtdir=/usr/lib/qt4
 %make
