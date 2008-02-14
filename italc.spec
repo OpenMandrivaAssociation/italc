@@ -6,7 +6,7 @@
 Name:		%name
 Version:	%version
 Release:	%release
-Summary:	iTALC - Intelligent Teaching And Learning with Computers
+Summary:	Intelligent Teaching And Learning with Computers
 License:	GPL
 Group:		Networking/Remote access
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-buildroot
@@ -46,7 +46,7 @@ making heavy use of threads). No matter how many cores you have, iTALC
 can make use of all of them. 
 
 %package client
-Summary:	iTALC client
+Summary:	ITALC client
 Group:		Networking/Remote access
 %description client
 iTALC is a use- and powerful didactical tool for teachers. It lets you
@@ -77,7 +77,7 @@ can make use of all of them.
 This package is the client that is run on each client on the network.
 
 %package master
-Summary:	iTALC - Intelligent Teaching And Learning with Computers
+Summary:	Intelligent Teaching And Learning with Computers
 Group:		Networking/Remote access
 Requires:	%{libname} = %{version}-%{release}
 %description master
@@ -107,7 +107,7 @@ making heavy use of threads). No matter how many cores you have, iTALC
 can make use of all of them.
 
 %package -n %libname
-Summary:	iTALC - Intelligent Teaching And Learning with Computers
+Summary:	Library used by ITALC
 Group:		Networking/Remote access
 
 %description -n %libname
