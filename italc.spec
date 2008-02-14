@@ -9,6 +9,7 @@ Release:	%release
 Summary:	iTALC - Intelligent Teaching And Learning with Computers
 License:	GPL
 Group:		Networking/Remote access
+BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-buildroot
 URL:		http://italc.sourceforge.net/
 Source:		%{name}-%{version}.tar.bz2
 BuildRequires:	qt4-devel
