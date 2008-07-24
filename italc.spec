@@ -1,7 +1,7 @@
 %define name italc
 %define libname %mklibname italc
 %define version 1.0.4
-%define release %mkrel 2
+%define release %mkrel 4
 
 Name:		%name
 Version:	%version
