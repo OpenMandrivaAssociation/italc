@@ -1,17 +1,19 @@
 %define name italc
 %define libname %mklibname italc
-%define version 1.0.4
-%define release %mkrel 4
+%define version 1.0.9
+%define release %mkrel 1
 
 Name:		%name
 Version:	%version
 Release:	%release
 Summary:	Intelligent Teaching And Learning with Computers
-License:	GPL
+License:	GPLv2+
 Group:		Networking/Remote access
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-buildroot
 URL:		http://italc.sourceforge.net/
 Source:		%{name}-%{version}.tar.bz2
+Patch0:		italc-1.0.9-detect-qt-libdir.patch
+Patch1:		italc-1.0.9-fix-setup-build.patch
 BuildRequires:	qt4-devel
 BuildRequires:  zlib-devel
 BuildRequires:  jpeg-devel
@@ -120,25 +122,23 @@ This is a library used by %{name}-master and %{name}-client.
 
 %prep
 %setup -q
-
+%patch0 -p0
+%patch1 -p0
 
 %build
-export CFLAGS="$CFLAGS -fPIC"
-export CXXFLAGS="$CXXFLAGS -fPIC"
-
-%configure --with-qtdir=/usr/lib/qt4
+%configure2_5x --with-qtdir=%{qt4dir} --disable-static
 %make
 %{__chmod} -x AUTHORS COPYING ChangeLog INSTALL README TODO
 
 %install
-%makeinstall docdir=%{buildroot}/tmp/doc
+rm -fr %buildroot
+%makeinstall_std docdir=/tmp/doc
 %{__rm} -Rf %{buildroot}/tmp/doc
 
 %files client
 %doc AUTHORS COPYING ChangeLog INSTALL README TODO
 %{_bindir}/ica
 %{_mandir}/man1/ica.1.*
-
 
 %files master
 %doc AUTHORS COPYING ChangeLog INSTALL README TODO
@@ -151,4 +151,4 @@ export CXXFLAGS="$CXXFLAGS -fPIC"
 
 %files -n %libname
 %doc AUTHORS COPYING ChangeLog INSTALL README TODO
-%{_libdir}/lib%{name}_core.so
+%{_libdir}/%name
