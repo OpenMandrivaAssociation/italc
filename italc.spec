@@ -1,7 +1,7 @@
 %define name italc
 %define libname %mklibname italc
 %define version 1.0.9
-%define release %mkrel 1
+%define release %mkrel 2
 
 Name:		%name
 Version:	%version
@@ -85,6 +85,7 @@ Summary:	Intelligent Teaching And Learning with Computers
 Group:		Networking/Remote access
 Requires:	%{libname} = %{version}-%{release}
 Requires:	%{name}-client = %{version}
+Requires(post):	%{name}-client = %{version}
 
 %description master
 iTALC is a use- and powerful didactical tool for teachers. It lets you
