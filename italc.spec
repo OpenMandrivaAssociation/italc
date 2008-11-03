@@ -14,6 +14,7 @@ URL:		http://italc.sourceforge.net/
 Source:		%{name}-%{version}.tar.bz2
 Patch0:		italc-1.0.9-detect-qt-libdir.patch
 Patch1:		italc-1.0.9-fix-setup-build.patch
+Patch2:		italc-1.0.9-fix-zh_cn_filename.patch
 BuildRequires:	qt4-devel
 BuildRequires:  zlib-devel
 BuildRequires:  jpeg-devel
@@ -50,6 +51,7 @@ can make use of all of them.
 %package client
 Summary:	ITALC client
 Group:		Networking/Remote access
+
 %description client
 iTALC is a use- and powerful didactical tool for teachers. It lets you
 view and control other computers in your network in several ways. It
@@ -82,6 +84,8 @@ This package is the client that is run on each client on the network.
 Summary:	Intelligent Teaching And Learning with Computers
 Group:		Networking/Remote access
 Requires:	%{libname} = %{version}-%{release}
+Requires:	%{name}-client = %{version}
+
 %description master
 iTALC is a use- and powerful didactical tool for teachers. It lets you
 view and control other computers in your network in several ways. It
@@ -108,6 +112,11 @@ Furthermore iTALC is optimized for usage on multi-core systems (by
 making heavy use of threads). No matter how many cores you have, iTALC
 can make use of all of them.
 
+%post master
+if [ ! -d /etc/italc/keys ] ; then
+	ica -role teacher -createkeypair ;
+fi
+
 %package -n %libname
 Summary:	Library used by ITALC
 Group:		Networking/Remote access
@@ -124,6 +133,14 @@ This is a library used by %{name}-master and %{name}-client.
 %setup -q
 %patch0 -p0
 %patch1 -p0
+%patch2 -p0 -b .zh
+
+(
+mv lib/resources/zh.qm lib/resources/zh_cn.qm
+mv ima/resources/qt_zh_CN.qm ima/resources/qt_zh_cn.qm
+mv ima/resources/zh.qm ima/resources/zh_cn.qm
+mv ica/resources/zh.qm ica/resources/zh_cn.qm
+)
 
 %build
 %configure2_5x --with-qtdir=%{qt4dir} --disable-static
