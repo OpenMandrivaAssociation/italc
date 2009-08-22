@@ -16,6 +16,7 @@ Patch0:		italc-1.0.9-detect-qt-libdir.patch
 Patch1:		italc-1.0.9-fix-setup-build.patch
 Patch2:		italc-1.0.9-fix-zh_cn_filename.patch
 Patch3:		italc-1.0.9-gcc44.patch
+Patch4:		italc-1.0.9-fix-str-fmt.patch
 BuildRequires:	qt4-devel
 BuildRequires:  zlib-devel
 BuildRequires:  jpeg-devel
@@ -137,6 +138,7 @@ This is a library used by %{name}-master and %{name}-client.
 %patch1 -p0
 %patch2 -p0 -b .zh
 %patch3 -p1 -b .gcc44
+%patch4 -p0 -b .st4
 
 (
 mv lib/resources/zh.qm lib/resources/zh_cn.qm
