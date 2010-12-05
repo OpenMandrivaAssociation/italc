@@ -1,7 +1,7 @@
 %define name italc
 %define libname %mklibname italc
-%define version 1.0.9
-%define release %mkrel 3
+%define version 1.0.11
+%define release %mkrel 1
 
 Name:		%name
 Version:	%version
@@ -11,12 +11,9 @@ License:	GPLv2+
 Group:		Networking/Remote access
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-buildroot
 URL:		http://italc.sourceforge.net/
-Source:		%{name}-%{version}.tar.bz2
-Patch0:		italc-1.0.9-detect-qt-libdir.patch
-Patch1:		italc-1.0.9-fix-setup-build.patch
-Patch2:		italc-1.0.9-fix-zh_cn_filename.patch
-Patch3:		italc-1.0.9-gcc44.patch
-Patch4:		italc-1.0.9-fix-str-fmt.patch
+Source:		http://sourceforge.net/projects/italc/files/italc/%{version}/%{name}-%{version}.tar.bz2
+Patch0:		italc-1.0.11-detect-qt-libdir.patch
+Patch4:		italc-1.0.11-fix-str-fmt.patch
 BuildRequires:	qt4-devel
 BuildRequires:  zlib-devel
 BuildRequires:  jpeg-devel
@@ -135,20 +132,11 @@ This is a library used by %{name}-master and %{name}-client.
 %prep
 %setup -q
 %patch0 -p0
-%patch1 -p0
-%patch2 -p0 -b .zh
-%patch3 -p1 -b .gcc44
-%patch4 -p0 -b .st4
-
-(
-mv lib/resources/zh.qm lib/resources/zh_cn.qm
-mv ima/resources/qt_zh_CN.qm ima/resources/qt_zh_cn.qm
-mv ima/resources/zh.qm ima/resources/zh_cn.qm
-mv ica/resources/zh.qm ica/resources/zh_cn.qm
-)
+%patch4 -p0
 
 %build
-%configure2_5x --with-qtdir=%{qt4dir} --disable-static
+autoreconf -fi
+%configure2_5x --disable-static
 %make
 %{__chmod} -x AUTHORS COPYING ChangeLog INSTALL README TODO
 
