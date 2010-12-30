@@ -1,7 +1,7 @@
 %define name italc
 %define libname %mklibname italc
 %define version 1.0.11
-%define release %mkrel 11
+%define release %mkrel 3
 %define ver 1.0.9.1.6
 %define italcgrp italc
 
