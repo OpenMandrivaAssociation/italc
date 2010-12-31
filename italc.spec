@@ -112,7 +112,7 @@ This is a library used by %{name}-master and %{name}-client.
 
 %build
 autoreconf -fi
-./configure --with-qtdir=%{qt4dir} --disable-static --disable-pixmaps-files --disable-menu-files --prefix=/usr
+./configure --with-qtdir=%{qt4dir} --disable-static --disable-pixmaps-files --disable-menu-files --prefix=/usr --libdir=/usr/%{_lib}
 
 make %{?jobs:-j%jobs}
 %{__chmod} -x AUTHORS COPYING ChangeLog INSTALL README TODO
