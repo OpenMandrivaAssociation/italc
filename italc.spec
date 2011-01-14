@@ -1,7 +1,7 @@
 %define name italc
 %define libname %mklibname italc
 %define version 1.0.13
-%define release %mkrel 1
+%define release %mkrel 2
 %define ver 1.0.9.1.6
 %define italcgrp italc
 
@@ -65,6 +65,7 @@ of all of them.
 Summary: Software for iTALC-clients
 Group: Networking/Remote access
 #Requires: italc = %version-%release
+Conflicts: italc-client < %version-%relese
 
 %description client
 This package contains the software, needed by iTALC-clients.
