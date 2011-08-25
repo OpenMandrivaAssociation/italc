@@ -112,6 +112,7 @@ This is a library used by %{name}-master and %{name}-client.
 %patch15 -p1
 %patch16 -p1
 %patch40 -p1
+%patch41 -p0
 
 %build
 autoreconf -fi
