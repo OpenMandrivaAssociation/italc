@@ -20,6 +20,7 @@ Source2:        italc-start_ica
 Source3:        italc.sysconfig
 Source5:        ica-autostart.desktop
 Source6:        italc-launcher
+Source7:	%{name}.desktop.in
 Patch0:			italc-1.0.11-detect-qt-libdir.patch
 Patch2:			italc-desktop-launcher-change.patch
 Patch4:			italc-1.0.11-fix-str-fmt.patch
@@ -30,6 +31,7 @@ Patch15: %name-%ver-ubuntu-ica-auto-respawn.patch
 Patch16: %name-%ver-ubuntu-fix-lock.patch
 #Patch30: %name-%ver-alt-no-avahi.patch
 Patch40: %name-%ver-alt-kde4-shutdown.patch
+Patch41: %{name}.desktop.in.patch
 BuildRequires:	qt4-devel
 BuildRequires:  zlib-devel
 BuildRequires:  jpeg-devel
