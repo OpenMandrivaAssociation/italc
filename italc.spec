@@ -32,6 +32,7 @@ Patch16: %name-%ver-ubuntu-fix-lock.patch
 #Patch30: %name-%ver-alt-no-avahi.patch
 Patch40: %name-%ver-alt-kde4-shutdown.patch
 Patch41: %{name}.desktop.in.patch
+BuildRequires:	automake
 BuildRequires:	qt4-devel
 BuildRequires:  zlib-devel
 BuildRequires:  jpeg-devel
