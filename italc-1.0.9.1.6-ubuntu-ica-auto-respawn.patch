@@ -1,0 +1,27 @@
+ ica/src/ivs.cpp |   13 +------------
+ 1 files changed, 1 insertions(+), 12 deletions(-)
+
+diff --git a/ica/src/ivs.cpp b/ica/src/ivs.cpp
+index 086ca61..34e6f1e 100644
+--- a/ica/src/ivs.cpp
++++ b/ica/src/ivs.cpp
+@@ -180,18 +180,7 @@ void IVS::run( void )
+ 			p.setProcessChannelMode( QProcess::ForwardedChannels );
+ 			p.start( QCoreApplication::applicationFilePath() +
+ 					" -rx11vs " + cmdline.join( " " ) );
+-			m_restart = FALSE;
+-			while( p.state() != QProcess::NotRunning )
+-			{
+-				sleep( 1 );
+-				if( m_restart )
+-				{
+-					p.terminate();
+-					sleep( 1 );
+-					p.kill();
+-					break;
+-				}
+-			}
++			p.waitForFinished(-1);
+ 		}
+ 		return;
+ 	}

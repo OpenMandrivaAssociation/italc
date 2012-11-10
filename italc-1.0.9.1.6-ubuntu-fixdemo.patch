@@ -1,0 +1,57 @@
+ ica/src/isd_server.cpp |    5 ++++-
+ ima/src/client.cpp     |   13 +++++++++++--
+ 2 files changed, 15 insertions(+), 3 deletions(-)
+
+diff --git a/ica/src/isd_server.cpp b/ica/src/isd_server.cpp
+index 94dff2d..4d431fe 100644
+--- a/ica/src/isd_server.cpp
++++ b/ica/src/isd_server.cpp
+@@ -256,7 +256,10 @@ int isdServer::processClient( socketDispatcher _sd, void * _user )
+ 			}
+ 			else
+ 			{
+-				action = port;
++				if ( port.split(":").size() == 3 )
++					action = port.split(":")[1]+":"+port.split(":")[2];
++				else
++					action = port;
+ 			}
+ 			break;
+ 		}
+diff --git a/ima/src/client.cpp b/ima/src/client.cpp
+index 1feca22..8e3970e 100644
+--- a/ima/src/client.cpp
++++ b/ima/src/client.cpp
+@@ -52,12 +52,13 @@ const int TITLE_HEIGHT = 23;
+ const QPoint CONTENT_OFFSET( DECO_WIDTH, DECO_WIDTH + TITLE_HEIGHT ); 
+ const QSize CONTENT_SIZE_SUB( 2*DECO_WIDTH, 2*DECO_WIDTH + TITLE_HEIGHT ); 
+ 
++extern QString __isd_host;
+ 
+ // resolve static symbols...
+ QHash<int, client *> client::s_clientIDs;
+ 
+ bool client::s_reloadSnapshotList = FALSE;
+-
++QString demohost;
+ 
+ class closeButton : public QWidget
+ {
+@@ -1251,8 +1252,16 @@ void updateThread::update( void )
+ 						i.second.toString() );
+ 				break;
+ 			case Cmd_StartDemo:
++				if ( __isd_host != "127.0.0.1" )
++				{
++					demohost=__isd_host + ":" + i.second.toList()[0].toString();
++				}
++				else
++				{
++					demohost=i.second.toList()[0].toString();
++				}
+ 				m_client->m_connection->startDemo(
+-					i.second.toList()[0].toString(),
++					demohost,
+ 					i.second.toList()[1].toInt() );
+ 				break;
+ 			case Cmd_StopDemo:
