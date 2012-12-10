@@ -1,7 +1,2 @@
 sources:
-  "ica-autostart.desktop:"	c2440133127fc858d50c152040823247e722f9ac
-  "italc-1.0.13.tar.bz2:"	c5f83e3d7f4b9ab5ff4dac9d4745f47daffa9635
-  "italc.desktop.in:"	dab6b3bd71704296bac59c019c18ac019a00595d
-  "italc-launcher:"	5cd68fe21c808940f83587b6a070ac6db1eced53
-  "italc-start_ica:"	d0e14d56045a25c1324e3b1ee03f70de36c1b35c
-  "italc.sysconfig:"	5a6ca9d67b667f4448c3c7c16095a9120af259df
+  "italc-1.0.13.tar.bz2": c5f83e3d7f4b9ab5ff4dac9d4745f47daffa9635
