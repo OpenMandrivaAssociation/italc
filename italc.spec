@@ -4,7 +4,7 @@
 
 Name:		italc
 Version:	1.0.13
-Release:	2
+Release:	3
 Summary:	Intelligent Teaching And Learning with Computers
 License:	GPLv2+
 Group:		Networking/Remote access
