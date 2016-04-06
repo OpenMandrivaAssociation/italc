@@ -1,0 +1,13 @@
+--- /lib/src/LocalSystem.cpp	2011-08-03 23:18:00.000000000 +0200
++++ /lib/src/LocalSystem.cpp.new	2013-01-06 00:03:38.156733747 +0100
+@@ -29,7 +29,10 @@
+ #include <QtCore/QProcess>
+ #include <QtGui/QWidget>
+ #include <QtNetwork/QHostInfo>
+-
++#ifdef ITALC_BUILD_LINUX 
++#include <unistd.h> 
++#include <sys/types.h> 
++#endif
+ 
+ #ifdef ITALC_BUILD_WIN32
