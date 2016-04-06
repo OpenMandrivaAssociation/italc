@@ -1,0 +1,32 @@
+diff -ur italc-2.0.2.orig/ima/src/main.cpp italc-2.0.2/ima/src/main.cpp
+--- italc-2.0.2.orig/ima/src/main.cpp	2014-07-11 00:36:06.000000000 +0400
++++ italc-2.0.2/ima/src/main.cpp	2014-12-28 22:20:51.000000000 +0300
+@@ -26,6 +26,8 @@
+ #include <QtCore/QModelIndex>
+ #include <QtGui/QApplication>
+ #include <QtGui/QSplashScreen>
++#include <QFile>
++#include <QDir>
+ 
+ #ifdef ITALC3
+ #include "MasterCore.h"
+@@ -51,6 +53,19 @@
+ {
+ 	QApplication app( argc, argv );
+ 
++       // create directory ~/.italc
++       QDir dir(QDir::home ().path()+"/.italc");
++       if (dir.exists()==false){
++           dir.mkdir(QDir::home ().path()+"/.italc");
++       }
++
++       // copy file ~/.italc/GlobalConfig.xml
++       QFile file (QDir::home ().path()+"/.italc/GlobalConfig.xml");
++       if (file.exists()==false){
++           QFile fileSkel("/etc/skel/.italc/GlobalConfig.xml");
++           if (fileSkel.exists()==true) fileSkel.copy(QDir::home().path()+"/.italc/GlobalConfig.xml");
++       }
++
+ 	ItalcCore::init();
+ 
+ 	Logger l( "ItalcMaster" );

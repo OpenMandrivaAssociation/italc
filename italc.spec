@@ -1,36 +1,31 @@
 %define libname %mklibname italc
-%define ver 1.0.9.1.6
 %define italcgrp italc
 
 Name:		italc
-Version:	1.0.13
-Release:	3
+Version:	2.0.2
+Release:	1
 Summary:	Intelligent Teaching And Learning with Computers
 License:	GPLv2+
 Group:		Networking/Remote access
 URL:		http://italc.sourceforge.net/
 Source0:	%{name}-%{version}.tar.bz2
-Source2:	italc-start_ica
-Source3:	italc.sysconfig
-Source5:	ica-autostart.desktop
-Source6:	italc-launcher
-Patch0:		italc-1.0.11-detect-qt-libdir.patch
-Patch1:		italc-1.0.13-mwindows.patch
-Patch2:		italc-desktop-launcher-change.patch
-Patch4:		italc-1.0.11-fix-str-fmt.patch
-Patch12:	%{name}-%{ver}-ubuntu-username.patch
-Patch13:	%{name}-%{ver}-ubuntu-fixdemo.patch
-Patch14:	%{name}-%{ver}-ubuntu-fix-ftbfs.patch
-Patch15:	%{name}-%{ver}-ubuntu-ica-auto-respawn.patch
-Patch16:	%{name}-%{ver}-ubuntu-fix-lock.patch
-Patch40:	%{name}-%{ver}-alt-kde4-shutdown.patch
+Source1:	italc.desktop
+Source3:	ica-autostart.desktop
+Source4:	ica-start
+Patch0:		italc-2.0.0-mdv-fix_cmake.diff
+Patch1:		harbour-3.2.0-mga-minilzo-2.8.patch
+Patch2:		italc-2.0.2-mga-globalconfig.patch
+BuildRequires:	cmake
 BuildRequires:	qt4-devel
+BuildRequires:	pkgconfig(xtst)
 BuildRequires:	zlib-devel
 BuildRequires:	jpeg-devel
 BuildRequires:	qt4-linguist
-BuildRequires:	libxtst-devel
 BuildRequires:	pkgconfig(openssl)
 BuildRequires:	pkgconfig(xi)
+BuildRequires:	pam-devel
+BuildRequires:	desktop-file-utils
+BuildRequires:	java-devel
 
 %description
 iTALC is a use- and powerful didactical tool for teachers. It lets you view
@@ -94,140 +89,170 @@ This is a library used by %{name}-master and %{name}-client.
 
 %prep
 %setup -q
-
-%patch0 -p0
-%patch1 -p1
-%patch2 -p0
-%patch4 -p0
-%patch12 -p1
-%patch13 -p1
-%patch14 -p1
-%patch15 -p1
-%patch16 -p1
-%patch40 -p1
+%patch0 -p1
+pushd ica/x11/common
+%patch1 -p5 -b .lzo
+popd
+%patch2 -p1
 
 %build
-autoreconf -fi
-./configure --with-qtdir=%{qt4dir} --disable-static --disable-pixmaps-files --disable-menu-files --prefix=/usr --libdir=/usr/%{_lib}
-
+%cmake
 %make
-chmod -x AUTHORS COPYING ChangeLog INSTALL README TODO
 
 %install
-mkdir -p %{buildroot}%{_defaultdocdir}/%{name}
-%makeinstall_std
+%makeinstall_std -C build
+
 # create the directories containing the auth-keys
 mkdir -p %{buildroot}%{_sysconfdir}/italc/keys/{private,public}/{teacher,admin,supporter,other}
 # create pseudo key files so RPM can own them (ghost files)
 for role in admin supporter teacher; do
 	touch %{buildroot}%{_sysconfdir}/italc/keys/{private,public}/$role/key
 done
+
 # create the initial config
-mkdir -p "%{buildroot}/%{_sysconfdir}/settings/iTALC Solutions"
-cat > "%{buildroot}/%{_sysconfdir}/settings/iTALC Solutions/iTALC.conf" << EOF
-[keypathsprivate]
-admin=%{_sysconfdir}/italc/keys/private/admin/key
-supporter=%{_sysconfdir}/italc/keys/private/supporter/key
-teacher=%{_sysconfdir}/italc/keys/private/teacher/key
+mkdir -p "%{buildroot}%{_sysconfdir}/iTALC Solutions"
+cat > "%{buildroot}%{_sysconfdir}/iTALC Solutions/iTALC.conf" << EOF
+[Authentication]
+LogonAuthenticationEnabled=0
+KeyAuthenticationEnabled=1
+PublicKeyBaseDir=%{_sysconfdir}/%{name}/keys/public
+PrivateKeyBaseDir=%{_sysconfdir}/%{name}/keys/private
+LogonGroups=
+PermissionRequiredWithKeyAuthentication=0
+PermissionRequiredWithLogonAuthentication=0
+SameUserConfirmationDisabled=0
 
-[keypathspublic]
-admin=%{_sysconfdir}/italc/keys/public/admin/key
-supporter=%{_sysconfdir}/italc/keys/public/supporter/key
-teacher=%{_sysconfdir}/italc/keys/public/teacher/key
+[DemoServer]
+Backend=0
+Multithreaded=1
+
+[Logging]
+LimittedLogFileSize=0
+LogFileDirectory=\$TEMP
+LogFileSizeLimit=-1
+LogLevel=4
+LogToStdErr=1
+LogToWindowsEventLog=0
+
+[Network]
+CoreServerPort=11100
+DemoServerPort=11400
+FirewallExceptionEnabled=1
+HttpServerEnabled=0
+HttpServerPort=5800
+
+[Service]
+Arguments=
+Autostart=1
+HideTrayIcon=0
+
+[VNC]
+CaptureLayeredWindows=0
+LowAccuracy=1
+PollFullScreen=1
+
+[Paths]
+PersonalConfiguration=\$APPDATA/PersonalConfig.xml
+GlobalConfiguration=\$APPDATA/GlobalConfig.xml
+SnapshotDirectory=\$APPDATA/Snapshots
+
 EOF
-# install start script for ica client
-install -D -m755 %{SOURCE2} %{buildroot}/%{_bindir}/start-ica
-install -D -m644 %{SOURCE5} %{buildroot}/%{_sysconfdir}/xdg/autostart/ica-autostart.desktop
-install -D -m755 %{SOURCE6} %{buildroot}/%{_bindir}/italc-launcher
-# icon for the desktop file
-install -Dm644 ima/data/italc.png %{buildroot}/%{_datadir}/pixmaps/italc.png
-#
-# Distribution specific
-#
-# configuration for ica
 
-install -D -m644 %{SOURCE3} %{buildroot}/%{_sysconfdir}/sysconfig/ica
+# create GlobalConfig.xml
+mkdir -p "%{buildroot}%{_sysconfdir}/skel/.%{name}"
+cat > "%{buildroot}%{_sysconfdir}/skel/.%{name}/GlobalConfig.xml" << EOF
+<?xml version="1.0"?>
+<!DOCTYPE %{name}-config-file>
+<globalclientconfig version="%{version}">
+  <body/>
+</globalclientconfig>
+EOF
 
-# as italc's configure doesn't understand docdir atm, create symlinks
-#pushd %{buildroot}/%_datadir/%name/doc
-#for i in *; do
-# ln -s %_datadir/%name/doc/$i %{buildroot}%_defaultdocdir/%name/
-#done
-#popd
+desktop-file-install --dir=%{buildroot}%{_datadir}/applications/ %{SOURCE1}
+install -Dm 0644 ima/data/%{name}.png %{buildroot}%{_datadir}/icons/%{name}.png
 
-rm -rf %{buildroot}/usr/local
+install -dm 755 %{buildroot}%{_sysconfdir}/xdg/autostart
+install -m 0644 %{SOURCE3} %{buildroot}%{_sysconfdir}/xdg/autostart/
+install -dm 755 %{buildroot}%{_bindir}
+install -m 755 %{SOURCE4} %{buildroot}%{_bindir}/
 
 %pre client
-%{_sbindir}/groupadd -r -f %{italkgrp} 2>/dev/null ||:
+%{_sbindir}/groupadd -r -f %{italcgrp} 2>/dev/null ||:
 
 %post client
 if
-    getent group %{italkgrp} >/dev/null
+    getent group %{italcgrp} >/dev/null
 then
-    : OK group %{italkgrp} already present
+    : OK group %{italcgrp} already present
 else
-    groupadd -r %{italkgrp} 2>/dev/null || :
+    groupadd -r %{italcgrp} 2>/dev/null || :
 fi
 
 %post master
 if
-    getent group %{italkgrp} >/dev/null
+    getent group %{italcgrp} >/dev/null
 then
-    : OK group %{italkgrp} already present
+    : OK group %{italcgrp} already present
 else
-    groupadd -r %{italkgrp} 2>/dev/null || :
+    groupadd -r %{italcgrp} 2>/dev/null || :
 fi
 
 # dont run scripts on update
 if [ ${1:-0} -lt 2 ]; then
+# the imc command tries to start its Qt GUI if $DISPLAY is set...
+  if [ ! -z ${DISPLAY+x} ]; then
+   remembered_DISPLAY=$DISPLAY
+  fi
+  unset DISPLAY
+
   for role in admin supporter teacher; do
 	if [ ! -f "%{_sysconfdir}/italc/keys/private/$role/key" ]; then
-		/usr/bin/ica -role $role -createkeypair 1>/dev/null
-		chgrp %{italkgrp} "%{_sysconfdir}/italc/keys/private/$role/key"
+		/usr/bin/imc -role $role -createkeypair 1>/dev/null
+		chgrp %{italcgrp} "%{_sysconfdir}/italc/keys/private/$role/key"
 		chmod 0440 "%{_sysconfdir}/italc/keys/private/$role/key"
 	fi
   done
+  if [ ! -z "${remembered_DISPLAY+x}" ]; then
+    DISPLAY=$remembered_DISPLAY
+  fi
 fi
 
 %files client
-%doc %{_mandir}/man1/ica*
 %{_bindir}/ica
-%{_bindir}/start-ica
+%{_bindir}/ica-start
+%{_bindir}/italc_auth_helper
 %config %{_sysconfdir}/xdg/autostart/ica-autostart.desktop
-%config(noreplace) %{_sysconfdir}/sysconfig/ica
 %doc AUTHORS COPYING ChangeLog INSTALL README TODO
-%{_datadir}/%{name}/doc/
 
-%dir %{_sysconfdir}/settings
-%dir "%{_sysconfdir}/settings/iTALC Solutions"
-%config(missingok,noreplace) "%{_sysconfdir}/settings/iTALC Solutions/iTALC.conf"
+%dir "%{_sysconfdir}/iTALC Solutions"
+%config(missingok,noreplace) "%{_sysconfdir}/iTALC Solutions/iTALC.conf"
 
 %dir %{_sysconfdir}/italc/keys/private
-%defattr(0440,root,%{italkgrp},0750)
+%defattr(0440,root,%{italcgrp},0750)
 %dir %{_sysconfdir}/italc/keys/private/teacher
 %dir %{_sysconfdir}/italc/keys/private/admin
 %dir %{_sysconfdir}/italc/keys/private/supporter
 %dir %{_sysconfdir}/italc/keys/private/other
-%ghost %attr(0440,root,%{italkgrp}) %config(noreplace) %{_sysconfdir}/italc/keys/private/teacher/key
-%ghost %attr(0440,root,%{italkgrp}) %config(noreplace) %{_sysconfdir}/italc/keys/private/admin/key
-%ghost %attr(0440,root,%{italkgrp}) %config(noreplace) %{_sysconfdir}/italc/keys/private/supporter/key
-#%ghost %attr(0440,root,%{italkgrp}) %config(noreplace) %{_sysconfdir}/italc/keys/private/other/key
-%ghost %attr(0444,root,%{italkgrp}) %config(noreplace) %{_sysconfdir}/italc/keys/public/teacher/key
-%ghost %attr(0444,root,%{italkgrp}) %config(noreplace) %{_sysconfdir}/italc/keys/public/admin/key
-%ghost %attr(0444,root,%{italkgrp}) %config(noreplace) %{_sysconfdir}/italc/keys/public/supporter/key
-#%ghost %attr(0444,root,%{italkgrp}) %config(noreplace) %{_sysconfdir}/italc/keys/public/other/key
+%ghost %attr(0440,root,%{italcgrp}) %config(noreplace) %{_sysconfdir}/italc/keys/private/teacher/key
+%ghost %attr(0440,root,%{italcgrp}) %config(noreplace) %{_sysconfdir}/italc/keys/private/admin/key
+%ghost %attr(0440,root,%{italcgrp}) %config(noreplace) %{_sysconfdir}/italc/keys/private/supporter/key
+#%ghost %attr(0440,root,%{italcgrp}) %config(noreplace) %{_sysconfdir}/italc/keys/private/other/key
+%ghost %attr(0444,root,%{italcgrp}) %config(noreplace) %{_sysconfdir}/italc/keys/public/teacher/key
+%ghost %attr(0444,root,%{italcgrp}) %config(noreplace) %{_sysconfdir}/italc/keys/public/admin/key
+%ghost %attr(0444,root,%{italcgrp}) %config(noreplace) %{_sysconfdir}/italc/keys/public/supporter/key
+#%ghost %attr(0444,root,%{italcgrp}) %config(noreplace) %{_sysconfdir}/italc/keys/public/other/key
 
 %files master
 %doc AUTHORS COPYING ChangeLog INSTALL README TODO
 %{_bindir}/italc
-%{_bindir}/italc-launcher
-%doc %{_mandir}/man1/italc.*
+%{_bindir}/imc
 %{_datadir}/applications/italc.desktop
 %{_datadir}/icons/italc.*
-%{_datadir}/pixmaps/*
-%{_datadir}/menu/%{name}
+%{_datadir}/%{name}/JavaViewer/VncViewer.jar
+%{_datadir}/%{name}/JavaViewer/index.vnc
+%config %{_sysconfdir}/skel/.%{name}/GlobalConfig.xml
 
 %files -n %{libname}
 %doc AUTHORS COPYING ChangeLog INSTALL README TODO
-%{_libdir}/%{name}
+%{_libdir}/libItalcCore.so
 

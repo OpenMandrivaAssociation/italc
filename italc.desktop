@@ -1,0 +1,12 @@
+[Desktop Entry]
+Name=iTALC
+GenericName=View and remote-control clients
+GenericName[ru]=Просмотр и дистанционное управление клиентами
+GenericName[de]=Clients überwachen und fernsteuern
+Comment=Intelligent Teaching And Learning with Computers
+Comment[ru]=Управление рабочими столами учеников
+Icon=italc
+Exec=italc
+Type=Application
+Terminal=false
+Categories=Education;

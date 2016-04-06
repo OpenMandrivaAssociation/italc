@@ -1,6 +1,6 @@
 [Desktop Entry]
 Type=Application
-Exec=/usr/bin/start-ica
+Exec=ica-start
 Terminal=false
 Name=ICA iTALC application
 
