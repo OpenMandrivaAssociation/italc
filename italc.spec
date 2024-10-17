@@ -7,7 +7,7 @@ Release:	1
 Summary:	Intelligent Teaching And Learning with Computers
 License:	GPLv2+
 Group:		Networking/Remote access
-URL:		http://italc.sourceforge.net/
+URL:		https://italc.sourceforge.net/
 Source0:	%{name}-%{version}.tar.bz2
 Source1:	italc.desktop
 Source3:	ica-autostart.desktop
